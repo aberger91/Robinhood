@@ -10,10 +10,7 @@ from six.moves.urllib.parse import unquote
 from six.moves.urllib.request import getproxies
 from six.moves import input
 
-if six.PY3: #pragma: no cover
-    import exceptions as RH_exception
-else:       #pragma: no cover
-    import exceptions as RH_exception
+import Robinhood.exceptions as RH_exception
 
 class Bounds(Enum):
     """enum for bounds in `historicals` endpoint"""
@@ -535,6 +532,20 @@ class Robinhood:
     ##############################
     # PORTFOLIOS DATA
     ##############################
+
+    def historical_portfolio(self,
+                             span,
+                             interval,
+                             bounds):
+        account_id = self.get_account()['account_number']
+        url = self.endpoints['portfolios'] + 'historicals/' + account_id
+        req = self.session.get(url, 
+                               headers=self.headers,
+                               params={'span': span,
+                                       'interval': interval,
+                                       'bounds': bounds}
+                               )
+        return req.json()
 
     def portfolios(self):
         """Returns the user's portfolio data."""
